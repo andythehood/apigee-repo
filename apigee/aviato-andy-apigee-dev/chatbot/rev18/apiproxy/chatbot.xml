@@ -2,7 +2,7 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1759806307403</CreatedAt>
-    <LastModifiedAt>1759806307403</LastModifiedAt>
+    <LastModifiedAt>1759806661628</LastModifiedAt>
     <BasePaths>/chatbot</BasePaths>
     <Policies>
         <Policy>AM-TargetPath</Policy>
