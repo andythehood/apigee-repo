@@ -1,8 +1,8 @@
 <APIProxy revision="1" name="fred">
     <DisplayName></DisplayName>
     <Description></Description>
-    <CreatedAt>1759818360203</CreatedAt>
-    <LastModifiedAt>1759818360203</LastModifiedAt>
+    <CreatedAt>1759818729382</CreatedAt>
+    <LastModifiedAt>1759818729382</LastModifiedAt>
     <BasePaths>/test</BasePaths>
     <ProxyEndpoints>
         <ProxyEndpoint>default</ProxyEndpoint>
