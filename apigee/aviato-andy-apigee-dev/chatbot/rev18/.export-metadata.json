@@ -1,6 +1,6 @@
 {
-  "pushed_at": "2025-10-07T03:05:20.512Z",
-  "commit_message": "Export Apigee aviato-andy-apigee-dev/chatbot rev18 (event: google.cloud.apigee.v1.ApiProxyService.CreateApiProxyRevision)",
+  "pushed_at": "2025-10-07T03:11:12.801Z",
+  "commit_message": "Export Apigee aviato-andy-apigee-dev/chatbot rev18 (event: google.cloud.apigee.v1.ApiProxyService.UpdateApiProxyRevision)",
   "files": [
     "apiproxy/chatbot.xml",
     "apiproxy/policies/AM-SetAudience.xml",
