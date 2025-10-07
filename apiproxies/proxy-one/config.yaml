@@ -1,0 +1,2 @@
+environments: [dev, sit]
+serviceAccount: apigee-deployer@my-project.iam.gserviceaccount.com
