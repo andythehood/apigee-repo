@@ -1,5 +1,5 @@
 {
-  "pushed_at": "2025-10-07T06:33:03.659Z",
+  "pushed_at": "2025-10-07T06:45:12.683Z",
   "commit_message": "Export Apigee aviato-andy-apigee-dev/fred rev2 (event: google.cloud.apigee.v1.ApiProxyService.CreateApiProxyRevision)",
   "files": [
     "apiproxy/fred.xml",
