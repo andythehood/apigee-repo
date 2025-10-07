@@ -1,0 +1,9 @@
+{
+  "pushed_at": "2025-10-07T03:42:15.912Z",
+  "commit_message": "Export Apigee aviato-andy-apigee-dev/test rev1 (event: google.cloud.apigee.v1.ApiProxyService.CreateApiProxyRevision)",
+  "files": [
+    "apiproxy/proxies/default.xml",
+    "apiproxy/targets/default.xml",
+    "apiproxy/test.xml"
+  ]
+}
