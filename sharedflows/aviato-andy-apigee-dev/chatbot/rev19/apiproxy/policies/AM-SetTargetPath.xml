@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage continueOnError="false" enabled="true" name="AM-SetTargetPath">
+  <DisplayName>AM-SetTargetPath</DisplayName>
+  <Properties/>
+  <Set>
+    <QueryParams>
+      <QueryParam name="a1">fred</QueryParam>
+      <QueryParam name="q1">{proxy.pathsuffix}</QueryParam>
+    </QueryParams>
+    <Path/>
+  </Set>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+  <AssignTo createNew="false" transport="http" type="request"/>
+</AssignMessage>
