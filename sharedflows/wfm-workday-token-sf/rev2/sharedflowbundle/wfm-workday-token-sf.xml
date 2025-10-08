@@ -2,7 +2,10 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1759890399207</CreatedAt>
-    <LastModifiedAt>1759890399207</LastModifiedAt>
+    <LastModifiedAt>1759890477227</LastModifiedAt>
+    <Policies>
+        <Policy>SA-SpikeArrest</Policy>
+    </Policies>
     <SharedFlows>
         <SharedFlow>default</SharedFlow>
     </SharedFlows>
