@@ -1,0 +1,5 @@
+environments:
+  dev: [private]
+  sit: [private, partner]
+  preprod: [public, private]
+  prod: [public, private, partner]
