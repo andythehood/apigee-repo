@@ -1,2 +1,0 @@
-environments: [dev, sit, preprod, prod]
-serviceAccount: apigee-deployer@my-project.iam.gserviceaccount.com
