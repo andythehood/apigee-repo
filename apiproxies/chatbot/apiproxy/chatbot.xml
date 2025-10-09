@@ -1,8 +1,8 @@
-<APIProxy revision="19" name="chatbot">
+<APIProxy revision="16" name="chatbot">
     <DisplayName></DisplayName>
     <Description></Description>
-    <CreatedAt>1759808023681</CreatedAt>
-    <LastModifiedAt>1759808023681</LastModifiedAt>
+    <CreatedAt>1759728847584</CreatedAt>
+    <LastModifiedAt>1759804179543</LastModifiedAt>
     <BasePaths>/chatbot</BasePaths>
     <Policies>
         <Policy>AM-TargetPath</Policy>
