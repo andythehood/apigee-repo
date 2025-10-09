@@ -1,0 +1,13 @@
+<APIProxy revision="1" name="proxy-two">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1759980864788</CreatedAt>
+    <LastModifiedAt>1759980864788</LastModifiedAt>
+    <BasePaths>/proxy-two</BasePaths>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
