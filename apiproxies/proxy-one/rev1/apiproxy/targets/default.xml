@@ -13,13 +13,6 @@
   <Flows/>
   <HTTPTargetConnection>
     <Properties/>
-    <LoadBalancer>
-      <Server name="httpbin"/>
-    </LoadBalancer>
-    <!-- <URL>https://httpbin.org</URL> -->
-    <!-- <SSLInfo>
-      <Enabled>true</Enabled>
-      <IgnoreValidationErrors>false</IgnoreValidationErrors>
-    </SSLInfo> -->
+    <URL>https://httpbin.org</URL>
   </HTTPTargetConnection>
 </TargetEndpoint>
