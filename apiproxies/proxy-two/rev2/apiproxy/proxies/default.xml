@@ -12,7 +12,7 @@
   </PostFlow>
   <Flows/>
   <HTTPProxyConnection>
-    <BasePath>/httpbin</BasePath>
+    <BasePath>/proxy-two</BasePath>
     <Properties/>
   </HTTPProxyConnection>
   <RouteRule name="default">
