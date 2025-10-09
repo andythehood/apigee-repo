@@ -1,2 +1,5 @@
-environments: [dev, sit, preprod, prod]
-serviceAccount: apigee-deployer@my-project.iam.gserviceaccount.com
+environments:
+  dev: [private]
+  sit: [private]
+  preprod: [private]
+  prod: [private]
