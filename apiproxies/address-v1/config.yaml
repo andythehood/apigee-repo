@@ -1,5 +1,4 @@
 environments:
-  dev: [private]
   sit: [private, partner, public]
   preprod: [public, private]
   prod: [public, private, partner]
