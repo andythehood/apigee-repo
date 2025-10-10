@@ -1,0 +1,18 @@
+<APIProxy revision="20" name="chatbot">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1759981017174</CreatedAt>
+    <LastModifiedAt>1759981017174</LastModifiedAt>
+    <BasePaths>/chatbot</BasePaths>
+    <Policies>
+        <Policy>AM-TargetPath</Policy>
+        <Policy>AM-SetTargetPath</Policy>
+        <Policy>AM-SetAudience</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
