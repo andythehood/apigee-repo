@@ -1,5 +1,5 @@
 serviceaccount: apigee-proxy-sa@aviato-andy-apigee-dev.iam.gserviceaccount.com
 environments:
-  main: [private, eval]
+  main: [private, eval, public]
   sit: [private, eval]
   prod: [private, partner, eval]
