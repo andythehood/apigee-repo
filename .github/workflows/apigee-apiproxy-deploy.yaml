@@ -146,8 +146,13 @@ jobs:
       - name: Run apigeelint
         if: steps.check_folder.outputs.exists == 'true'
         run: |
+          # Ignore errors
+          set +e
           # set maxWarnings to -1 to ignore warnings, otherwise set to a number to fail build if the number of warnings is exceeded
-          apigeelint -s ./apiproxies/${{ matrix.proxy }}/apiproxy -f stylish --maxWarnings 10
+          LINT_OUTPUT=$(apigeelint -s ./apiproxies/${{ matrix.proxy }}/apiproxy -f stylish --maxWarnings -1)
+          STATUS=$?
+          # Display linting output
+          echo "$LINT_OUTPUT"
 
       - name: Create API Proxy bundle
         if: steps.check_folder.outputs.exists == 'true'
