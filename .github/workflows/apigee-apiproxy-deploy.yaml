@@ -72,8 +72,8 @@ jobs:
     environment: ${{ github.ref_name == 'main' && 'dev' || github.ref_name }}
     env:
       REF_NAME: ${{ github.ref_name }}
-      APIGEE_X_ORG: ${{ vars.APIGEE_X_ORG }}
-      APIGEE_X_ENVS: "eval"
+      APIGEE_ORG: ${{ vars.APIGEE_ORG }}
+      APIGEE_ENVS: "eval"
     strategy:
       matrix:
         proxy: ${{ fromJson(needs.detect-changes.outputs.changed_proxies) }}
@@ -84,15 +84,15 @@ jobs:
       - name: Get Environments
         id: get-envs
         run: |
-          # Get the environments from the CONFIG file, else default to APIGEE_X_ENVS environment variable in job
+          # Get the environments from the CONFIG file, else default to APIGEE_ENVS environment variable in job
 
           if [ -f "apiproxies/${{ matrix.proxy }}/config.yaml" ]; then
-            APIGEE_X_ENVS=$(yq eval '.environments[env(REF_NAME)] | join(" ")' "apiproxies/${{ matrix.proxy }}/config.yaml")
-            echo "APIGEE_X_ENVS=$APIGEE_X_ENVS" >> "$GITHUB_ENV"
+            APIGEE_ENVS=$(yq eval '.environments[env(REF_NAME)] | join(" ")' "apiproxies/${{ matrix.proxy }}/config.yaml")
+            echo "APIGEE_ENVS=$APIGEE_ENVS" >> "$GITHUB_ENV"
           fi
 
       - name: Apigee Environments
-        run: echo "The value is $APIGEE_X_ENVS"
+        run: echo "The value is $APIGEE_ENVS"
 
       - name: Get Service Account
         id: get-sa
@@ -100,12 +100,12 @@ jobs:
           # Get the service account from the CONFIG file, else default n
 
           if [ -f "apiproxies/${{ matrix.proxy }}/config.yaml" ]; then
-            APIGEE_X_SA=$(yq eval '.serviceaccount' "apiproxies/${{ matrix.proxy }}/config.yaml")
-            echo "APIGEE_X_SA=$APIGEE_X_SA" >> "$GITHUB_ENV"
+            APIGEE_SA=$(yq eval '.serviceaccount' "apiproxies/${{ matrix.proxy }}/config.yaml" | envsubst)
+            echo "APIGEE_SA=$APIGEE_SA" >> "$GITHUB_ENV"
           fi
 
       - name: Apigee SA
-        run: echo "The value is $APIGEE_X_SA"
+        run: echo "The value is $APIGEE_SA"
 
       # The committed changes may have deleted the proxy folder, so we need to check whether it still exists
       # If it does, then we proceed with the deployment
@@ -142,7 +142,7 @@ jobs:
       - name: Output Deployment Info
         if: steps.check_folder.outputs.exists == 'true'
         run: |
-          echo "Deployed ${{ matrix.proxy }} to environments $APIGEE_X_ENVS in project $APIGEE_X_ORG from branch ${{ github.ref_name }}"
+          echo "Deployed ${{ matrix.proxy }} to environments $APIGEE_ENVS in project $APIGEE_ORG from branch ${{ github.ref_name }}"
 
       - name: Run apigeelint
         if: steps.check_folder.outputs.exists == 'true'
@@ -166,21 +166,21 @@ jobs:
         if: steps.check_folder.outputs.exists == 'true'
         id: import
         run: |
-          apigeecli apis import --default-token -o "$APIGEE_X_ORG"  --folder ./bundle
-          REVISION=$(apigeecli apis get --default-token -o "$APIGEE_X_ORG" --name ${{ matrix.proxy }} | jq -r '.latestRevisionId')
+          apigeecli apis import --default-token -o "$APIGEE_ORG"  --folder ./bundle
+          REVISION=$(apigeecli apis get --default-token -o "$APIGEE_ORG" --name ${{ matrix.proxy }} | jq -r '.latestRevisionId')
           echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
 
       - name: Deploy ApigeeX Proxy
         if: steps.check_folder.outputs.exists == 'true'
         run: |
           echo "Deploying revision ${{ steps.import.outputs.revision }}"
-          for APIGEE_X_ENV in $APIGEE_X_ENVS; do
-            if [ -z "$APIGEE_X_SA" ] || [ "$APIGEE_X_SA" = "null" ]; then
+          for APIGEE_ENV in $APIGEE_ENVS; do
+            if [ -z "$APIGEE_SA" ] || [ "$APIGEE_SA" = "null" ]; then
               echo "No service account specified, deploying without service account"
-              apigeecli apis deploy --default-token -o "$APIGEE_X_ORG" -e "$APIGEE_X_ENV" --name "${{ matrix.proxy }}" --rev ${{ steps.import.outputs.revision }} --ovr
+              apigeecli apis deploy --default-token -o "$APIGEE_ORG" -e "$APIGEE_ENV" --name "${{ matrix.proxy }}" --rev ${{ steps.import.outputs.revision }} --ovr
             else
-              echo "Using service account: $APIGEE_X_SA"
-              apigeecli apis deploy --default-token -o "$APIGEE_X_ORG" -e "$APIGEE_X_ENV" --name "${{ matrix.proxy }}" --rev ${{ steps.import.outputs.revision }} --ovr --sa "$APIGEE_X_SA"
+              echo "Using service account: $APIGEE_SA"
+              apigeecli apis deploy --default-token -o "$APIGEE_ORG" -e "$APIGEE_ENV" --name "${{ matrix.proxy }}" --rev ${{ steps.import.outputs.revision }} --ovr --sa "$APIGEE_SA"
             fi
           done
 
@@ -190,9 +190,9 @@ jobs:
         run: |
           set +e  # disable immediate exit on error
           echo "Proxy ${{ matrix.proxy }} does not exist. Undeploying from all Environments."
-          ENVS=$(apigeecli environments list --default-token -o "$APIGEE_X_ORG"  | jq -r '. | join(" ")')
-          for APIGEE_X_ENV in $ENVS; do
-            OUTPUT=$(apigeecli apis undeploy --default-token -o "$APIGEE_X_ORG" -e "$APIGEE_X_ENV" --name "${{ matrix.proxy }}")
+          ENVS=$(apigeecli environments list --default-token -o "$APIGEE_ORG"  | jq -r '. | join(" ")')
+          for APIGEE_ENV in $ENVS; do
+            OUTPUT=$(apigeecli apis undeploy --default-token -o "$APIGEE_ORG" -e "$APIGEE_ENV" --name "${{ matrix.proxy }}")
             STATUS=$?
 
             if [ "$STATUS" -eq 0 ]; then
