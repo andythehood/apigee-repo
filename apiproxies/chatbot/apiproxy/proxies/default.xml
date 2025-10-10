@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ProxyEndpoint name="default">
   <Description>
-    updates to rev 18
+    update to rev 20
     </Description>
   <FaultRules/>
   <PreFlow name="PreFlow">
