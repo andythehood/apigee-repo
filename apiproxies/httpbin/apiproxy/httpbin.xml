@@ -1,13 +1,13 @@
 <APIProxy revision="3" name="httpbin">
-    <DisplayName></DisplayName>
-    <Description></Description>
-    <CreatedAt>1759793352618</CreatedAt>
-    <LastModifiedAt>1759803884496</LastModifiedAt>
-    <BasePaths>/httpbin</BasePaths>
-    <ProxyEndpoints>
-        <ProxyEndpoint>default</ProxyEndpoint>
-    </ProxyEndpoints>
-    <TargetEndpoints>
-        <TargetEndpoint>default</TargetEndpoint>
-    </TargetEndpoints>
+  <DisplayName></DisplayName>
+  <Description>Promoted on: 2025-10-11T03:37:58.163Z, Revision: 3, Source SHA: 6c14c89</Description>
+  <CreatedAt>1759793352618</CreatedAt>
+  <LastModifiedAt>1759803884496</LastModifiedAt>
+  <BasePaths>/httpbin</BasePaths>
+  <ProxyEndpoints>
+    <ProxyEndpoint>default</ProxyEndpoint>
+  </ProxyEndpoints>
+  <TargetEndpoints>
+    <TargetEndpoint>default</TargetEndpoint>
+  </TargetEndpoints>
 </APIProxy>
