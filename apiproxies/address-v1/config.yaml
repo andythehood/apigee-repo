@@ -1,4 +1,4 @@
 environments:
-  sit: [private, partner, public]
-  preprod: [public, private]
-  prod: [public, private, partner]
+  main: [eval]
+  sit: [private, partner, public, eval]
+  prod: [private, partner, eval]
