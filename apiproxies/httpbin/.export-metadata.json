@@ -1,0 +1,9 @@
+{
+  "pushed_at": "2025-10-07T02:24:55.434Z",
+  "commit_message": "Export Apigee aviato-andy-apigee-dev/httpbin rev3 (event: google.cloud.apigee.v1.ApiProxyService.UpdateApiProxyRevision)",
+  "files": [
+    "apiproxy/httpbin.xml",
+    "apiproxy/proxies/default.xml",
+    "apiproxy/targets/default.xml"
+  ]
+}

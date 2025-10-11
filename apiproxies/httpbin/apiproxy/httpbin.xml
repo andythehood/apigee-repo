@@ -1,0 +1,13 @@
+<APIProxy revision="3" name="httpbin">
+  <DisplayName></DisplayName>
+  <Description>ORIGIN: branch=main rev=3 commit=32d2c3f date=2025-10-11T22:16:10.215Z</Description>
+  <CreatedAt>1759793352618</CreatedAt>
+  <LastModifiedAt>1759803884496</LastModifiedAt>
+  <BasePaths>/httpbin</BasePaths>
+  <ProxyEndpoints>
+    <ProxyEndpoint>default</ProxyEndpoint>
+  </ProxyEndpoints>
+  <TargetEndpoints>
+    <TargetEndpoint>default</TargetEndpoint>
+  </TargetEndpoints>
+</APIProxy>
