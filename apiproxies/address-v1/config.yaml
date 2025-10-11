@@ -1,4 +1,4 @@
 environments:
   main: [eval]
-  sit: [private, partner, eval]
+  sit: [private, partner, eval, public]
   prod: [private, partner, eval]
