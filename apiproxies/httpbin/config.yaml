@@ -1,6 +1,4 @@
-serviceaccount: apigee-deployer@my-project.iam.gserviceaccount.com
 environments:
-  dev: [public]
-  sit: [public]
-  preprod: [public]
-  prod: [public]
+  main: []
+  sit: [eval]
+  prod: [eval]
