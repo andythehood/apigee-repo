@@ -1,9 +1,0 @@
-{
-  "pushed_at": "2025-10-09T07:03:02.915Z",
-  "commit_message": "Export Apigee aviato-andy-apigee-dev/admission-v1 rev2 (event: google.cloud.apigee.v1.ApiProxyService.CreateApiProxyRevision)",
-  "files": [
-    "apiproxy/admission-v1.xml",
-    "apiproxy/proxies/default.xml",
-    "apiproxy/targets/default.xml"
-  ]
-}
