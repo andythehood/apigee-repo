@@ -149,8 +149,8 @@ jobs:
         run: |
           # Ignore errors
           set +e
-          # set maxWarnings to -1 to ignore warnings, otherwise set to a number to fail build if the number of warnings is exceeded
-          LINT_OUTPUT=$(apigeelint -s ./apiproxies/${{ matrix.proxy }}/apiproxy -f stylish --maxWarnings -1)
+          # set maxWarnings to a number to fail build if the number of warnings is exceeded (default is -1)
+          LINT_OUTPUT=$(apigeelint -s ./apiproxies/${{ matrix.proxy }}/apiproxy -f stylish --profile apigeex)
           STATUS=$?
           # Display linting output
           echo "$LINT_OUTPUT"
