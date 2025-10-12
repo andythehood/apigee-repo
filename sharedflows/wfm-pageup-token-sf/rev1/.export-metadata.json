@@ -1,8 +1,0 @@
-{
-  "pushed_at": "2025-10-08T02:28:55.250Z",
-  "commit_message": "Export Apigee aviato-andy-apigee-dev/wfm-pageup-token-sf rev1 (event: google.cloud.apigee.v1.SharedFlowService.CreateSharedFlowRevision)",
-  "files": [
-    "sharedflowbundle/sharedflows/default.xml",
-    "sharedflowbundle/wfm-pageup-token-sf.xml"
-  ]
-}
