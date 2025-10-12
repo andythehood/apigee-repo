@@ -74,7 +74,7 @@ jobs:
       APIGEE_ENVS: "eval"
     strategy:
       matrix:
-        shareflow: ${{ fromJson(needs.detect-changes.outputs.changed_sharedflows) }}
+        sharedflow: ${{ fromJson(needs.detect-changes.outputs.changed_sharedflows) }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
