@@ -1,0 +1,11 @@
+{
+  "pushedAt": "2025-10-13T03:17:06.908Z",
+  "revision": "1",
+  "authenticatedUser": "andy@aviato.consulting",
+  "commitMessage": "google.cloud.apigee.v1.ApiProxyService.CreateApiProxyRevision: aviato-andy-apigee-dev/p10/1 andy@aviato.consulting",
+  "files": [
+    "apiproxy/p10.xml",
+    "apiproxy/proxies/default.xml",
+    "apiproxy/targets/default.xml"
+  ]
+}
