@@ -1,0 +1,13 @@
+<APIProxy revision="1" name="p11">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1760327368079</CreatedAt>
+    <LastModifiedAt>1760327368079</LastModifiedAt>
+    <BasePaths>/p2</BasePaths>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
