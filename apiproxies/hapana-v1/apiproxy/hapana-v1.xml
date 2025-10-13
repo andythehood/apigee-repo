@@ -1,0 +1,13 @@
+<APIProxy revision="1" name="hapana-v1">
+  <DisplayName></DisplayName>
+  <Description>ORIGIN: branch=main rev=1 commit=0cdae41 date=2025-10-13T22:45:25.381Z</Description>
+  <CreatedAt>1760395451153</CreatedAt>
+  <LastModifiedAt>1760395451153</LastModifiedAt>
+  <BasePaths>/hapana-v1</BasePaths>
+  <ProxyEndpoints>
+    <ProxyEndpoint>default</ProxyEndpoint>
+  </ProxyEndpoints>
+  <TargetEndpoints>
+    <TargetEndpoint>default</TargetEndpoint>
+  </TargetEndpoints>
+</APIProxy>
