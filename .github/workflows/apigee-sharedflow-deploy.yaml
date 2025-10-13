@@ -1,0 +1,210 @@
+name: Deploy ApigeeX SharedFlows
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches:
+      - prod
+    paths:
+      - "sharedflows/**"
+  pull_request:
+    branches:
+      - prod
+    paths:
+      - "sharedflows/**"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    name: Detect Changes to Shared Flows
+    # This job detects which sharedflows have changed since the last commit
+    runs-on: ubuntu-latest
+
+    outputs:
+      changed_sharedflows: ${{ steps.set-sharedflows.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed
+        run: |
+          echo "Detecting changed files..."
+          echo "Event name: ${{ github.event_name }}"
+
+          # Compare with the base commit (for PRs) or previous SHA (for push)
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE=${{ github.event.pull_request.base.sha }}
+          else
+            BASE=${{ github.event.before }}
+          fi
+
+          CHANGED=$(git diff --name-only "$BASE" ${{ github.sha }} | xargs)
+
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract changed Sharedflow folders
+        id: set-sharedflows
+        run: |
+          FILES="${{ steps.changed.outputs.changed_files }}"
+
+          SHAREDFLOWS=$(echo "$FILES" | tr ' ' '\n' | grep '^sharedflows/' | cut -d/ -f2 | sort -u | jq -R . | jq -s .)
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "$SHAREDFLOWS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  deploy-sharedflows:
+    name: Deploy Changed SharedFlows
+    needs: detect-changes
+    if: needs.detect-changes.outputs.changed_sharedflows != '[]'
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'dev' || github.ref_name }}
+    env:
+      REF_NAME: ${{ github.ref_name }}
+      APIGEE_ORG: ${{ vars.APIGEE_ORG }}
+      APIGEE_ENVS: "eval"
+    strategy:
+      matrix:
+        sharedflow: ${{ fromJson(needs.detect-changes.outputs.changed_sharedflows) }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Get Environments
+        id: get-envs
+        run: |
+          # Get the environments from the CONFIG file, else default to APIGEE_ENVS environment variable in job
+
+          if [ -f "sharedflows/${{ matrix.sharedflow }}/config.yaml" ]; then
+            APIGEE_ENVS=$(yq eval '.environments[env(REF_NAME)] | join(" ")' "sharedflows/${{ matrix.sharedflow }}/config.yaml")
+            echo "APIGEE_ENVS=$APIGEE_ENVS" >> "$GITHUB_ENV"
+          fi
+
+      - name: Apigee Environments
+        run: echo "The value is $APIGEE_ENVS"
+
+      - name: Get Service Account
+        id: get-sa
+        run: |
+          # Get the service account from the CONFIG file, else default n
+
+          if [ -f "sharedflows/${{ matrix.sharedflow }}/config.yaml" ]; then
+            APIGEE_SA=$(yq eval '.serviceaccount' "sharedflows/${{ matrix.sharedflow }}/config.yaml" | envsubst)
+            echo "APIGEE_SA=$APIGEE_SA" >> "$GITHUB_ENV"
+          fi
+
+      - name: Apigee SA
+        run: echo "The value is $APIGEE_SA"
+
+      # The committed changes may have deleted the sharedflow folder, so we need to check whether it still exists
+      # If it does, then we proceed with the deployment
+      # If it does not, we undeploy the sharedflow from all environments
+
+      - name: Check if sharedflow folder exists
+        id: check_folder
+        run: |
+          if [ -d "sharedflows/${{ matrix.sharedflow }}/sharedflowbundle" ]; then
+            echo "Sharedflow Folder exists"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Folder does not exist"
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.APIGEE_SA_KEY }}"
+
+      - name: Install Apigee CLI
+        run: |
+          curl -sLO https://github.com/apigee/apigeecli/releases/download/v2.15.0/apigeecli_v2.15.0_Linux_x86_64.zip
+          unzip apigeecli_v2.15.0_Linux_x86_64.zip
+          sudo mv apigeecli_v2.15.0_Linux_x86_64/apigeecli /usr/local/bin/
+
+      - name: Install apigeelint
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          npm install -g apigeelint
+
+      - name: Output Deployment Info
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          echo "Deployed ${{ matrix.sharedflow }} to environments $APIGEE_ENVS in project $APIGEE_ORG from branch ${{ github.ref_name }}"
+
+      - name: Run apigeelint
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          # Ignore errors
+          set +e
+          # set maxWarnings to a number to fail build if the number of warnings is exceeded (default is -1)
+          LINT_OUTPUT=$(apigeelint -s ./sharedflows/${{ matrix.sharedflow }}/sharedflowbundle -f stylish --profile apigeex)
+          STATUS=$?
+          # Display linting output
+          echo "$LINT_OUTPUT"
+
+      - name: Create Sharedflow bundle
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          mkdir bundle
+          cd sharedflows/${{ matrix.sharedflow }}
+          zip -r ../../bundle/${{ matrix.sharedflow }}.zip sharedflowbundle
+
+      - name: Import ApigeeX Sharedflow
+        if: steps.check_folder.outputs.exists == 'true'
+        id: import
+        run: |
+          apigeecli sharedflows import --default-token -o "$APIGEE_ORG"  --folder ./bundle
+          REVISION=$(apigeecli sharedflows get --default-token -o "$APIGEE_ORG" --name ${{ matrix.sharedflow }} | jq -r '.latestRevisionId')
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy ApigeeX Sharedflow
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          echo "Deploying revision ${{ steps.import.outputs.revision }}"
+          for APIGEE_ENV in $APIGEE_ENVS; do
+            if [ -z "$APIGEE_SA" ] || [ "$APIGEE_SA" = "null" ]; then
+              echo "No service account specified, deploying without service account"
+              apigeecli sharedflows deploy --default-token -o "$APIGEE_ORG" -e "$APIGEE_ENV" --name "${{ matrix.sharedflow }}" --rev ${{ steps.import.outputs.revision }} --ovr
+            else
+              echo "Using service account: $APIGEE_SA"
+              apigeecli sharedflows deploy --default-token -o "$APIGEE_ORG" -e "$APIGEE_ENV" --name "${{ matrix.sharedflow }}" --rev ${{ steps.import.outputs.revision }} --ovr --sa "$APIGEE_SA"
+            fi
+          done
+
+      # The committed changes have deleted the sharedflow, so we undeploy the sharedflow from all environments
+      - name: Undeploy Deleted Sharedflows
+        if: steps.check_folder.outputs.exists == 'false'
+        run: |
+          set +e  # disable immediate exit on error
+          echo "Sharedflow ${{ matrix.sharedflow }} does not exist. Undeploying from all Environments."
+          ENVS=$(apigeecli environments list --default-token -o "$APIGEE_ORG"  | jq -r '. | join(" ")')
+          for APIGEE_ENV in $ENVS; do
+            OUTPUT=$(apigeecli sharedflows undeploy --default-token -o "$APIGEE_ORG" -e "$APIGEE_ENV" --name "${{ matrix.sharedflow }}")
+            STATUS=$?
+
+            if [ "$STATUS" -eq 0 ]; then
+              echo "✅ Success"
+            elif echo "$OUTPUT" | grep -q "is not deployed"; then
+              echo "ℹ️ Sharedflow is not deployed to this environment, so treating as success"
+            else
+              echo "❌ Unexpected error"
+              exit $STATUS
+            fi
+          done
+
+      - name: Remove Deleted Sharedflows
+        if: steps.check_folder.outputs.exists == 'false'
+        run: |
+          echo "Sharedflow ${{ matrix.sharedflow }} does not exist. Deleting from Organization."
+          # TODO: Add logic to delete the sharedflow from the organization
