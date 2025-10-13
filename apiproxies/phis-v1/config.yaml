@@ -1,4 +1,4 @@
 environments:
   main: [eval]
-  sit: [eval]
+  sit: [eval, public]
   prod: [eval]
