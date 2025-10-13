@@ -1,0 +1,11 @@
+{
+  "pushedAt": "2025-10-13T04:00:45.981Z",
+  "revision": "2",
+  "authenticatedUser": "andy@aviato.consulting",
+  "commitMessage": "CreateApiProxyRevision: aviato-andy-apigee-dev/p12/2 andy@aviato.consulting",
+  "files": [
+    "apiproxy/p12.xml",
+    "apiproxy/proxies/default.xml",
+    "apiproxy/targets/default.xml"
+  ]
+}
