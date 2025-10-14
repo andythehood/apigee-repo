@@ -1,0 +1,161 @@
+---
+name: Apigee Lint Check
+on:
+  # Triggers the workflow on pull request events
+  pull_request:
+    branches:
+      - sit
+      - ppe
+      - prod
+    paths:
+      - 'apiproxies/**/*'
+      - 'sharedflows/**/*'
+
+jobs:
+  detect-changes:  # <--- Detect job to find changed proxies and sharedflows
+    name: "Get changed directories for proxies and sharedflows"
+    runs-on: ubuntu-latest
+
+    outputs:
+      changed_proxies: ${{ steps.set-proxies.outputs.matrix }}
+      changed_sharedflows: ${{ steps.set-sharedflows.outputs.matrix }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed
+        run: |
+          echo "Detecting changed files..."
+          echo "Event name: ${{ github.event_name }}"
+
+          # Compare with the base commit (for PRs) or previous SHA (for push)
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE=${{ github.event.pull_request.base.sha }}
+          else
+            BASE=${{ github.event.before }}
+          fi
+
+          CHANGED=$(git diff --name-only "$BASE" ${{ github.sha }} | xargs)
+
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract changed API Proxy folders
+        id: set-proxies
+        run: |
+          FILES="${{ steps.changed.outputs.changed_files }}"
+
+          PROXIES=$(echo "$FILES" | tr ' ' '\n' | grep '^apiproxies/' | cut -d/ -f2 | sort -u | jq -R . | jq -s .)
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "$PROXIES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract changed SharedFlow folders
+        id: set-sharedflows
+        run: |
+          FILES="${{ steps.changed.outputs.changed_files }}"
+
+          SHAREDFLOWS=$(echo "$FILES" | tr ' ' '\n' | grep '^sharedflows/' | cut -d/ -f2 | sort -u | jq -R . | jq -s .)
+          echo "matrix<<EOF" >> $GITHUB_OUTPUT
+          echo "$SHAREDFLOWS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+  lint-proxies:
+    name: Lint Changed Proxies
+    needs: detect-changes
+    if: needs.detect-changes.outputs.changed_proxies != '[]'
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'dev' || github.ref_name }}
+    env:
+      REF_NAME: ${{ github.ref_name }}
+    strategy:
+      matrix:
+        proxy: ${{ fromJson(needs.detect-changes.outputs.changed_proxies) }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # The committed changes may have deleted the proxy folder, so we need to check whether it still exists
+      # If it does, then we proceed with the lint
+      # If it does not, we ignore
+
+      - name: Check if proxy folder exists
+        id: check_folder
+        run: |
+          if [ -d "apiproxies/${{ matrix.proxy }}/apiproxy" ]; then
+            echo "Proxy Folder exists"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Folder does not exist"
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install apigeelint
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          npm install -g apigeelint
+
+      - name: Run apigeelint
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          # Ignore errors
+          set +e
+          # set maxWarnings to a number to fail build if the number of warnings is exceeded (default is -1)
+          LINT_OUTPUT=$(apigeelint -s ./apiproxies/${{ matrix.proxy }}/apiproxy -f stylish --profile apigeex)
+          STATUS=$?
+          # Display linting output
+          echo "$LINT_OUTPUT"
+
+  lint-sharedflows:
+    name: Lint Changed Shared Flows
+    needs: detect-changes
+    if: needs.detect-changes.outputs.changed_sharedflows != '[]'
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'dev' || github.ref_name }}
+    env:
+      REF_NAME: ${{ github.ref_name }}
+    strategy:
+      matrix:
+        proxy: ${{ fromJson(needs.detect-changes.outputs.changed_proxies) }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # The committed changes may have deleted the sharedflow folder, so we need to check whether it still exists
+      # If it does, then we proceed with the lint
+      # If it does not, we ignore
+
+      - name: Check if sharedflow folder exists
+        id: check_folder
+        run: |
+          if [ -d "sharedflows/${{ matrix.sharedflow }}/sharedflowbundle" ]; then
+            echo "Sharedflow Folder exists"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Folder does not exist"
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install apigeelint
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          npm install -g apigeelint
+
+      - name: Run apigeelint
+        if: steps.check_folder.outputs.exists == 'true'
+        run: |
+          # Ignore errors
+          set +e
+          # set maxWarnings to a number to fail build if the number of warnings is exceeded (default is -1)
+          LINT_OUTPUT=$(apigeelint -s ./sharedflows/${{ matrix.proxy }}/sharedflowbundle -f stylish --profile apigeex)
+          STATUS=$?
+          # Display linting output
+          echo "$LINT_OUTPUT"
+
