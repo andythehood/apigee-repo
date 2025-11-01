@@ -1,4 +1,0 @@
-environments:
-  main: []
-  sit: [eval]
-  prod: [eval]
