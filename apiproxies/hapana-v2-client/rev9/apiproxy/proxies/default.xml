@@ -5,6 +5,9 @@
   <PreFlow name="PreFlow">
     <Request>
       <Step>
+        <Name>CORS-Policy</Name>
+      </Step>
+      <Step>
         <Name>EV-ExtractHeaders</Name>
       </Step>
       <Step>
