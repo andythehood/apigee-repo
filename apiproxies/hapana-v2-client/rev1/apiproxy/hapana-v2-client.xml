@@ -1,0 +1,13 @@
+<APIProxy revision="1" name="hapana-v2-client">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1761976996588</CreatedAt>
+    <LastModifiedAt>1761976996588</LastModifiedAt>
+    <BasePaths>/hapana-v1</BasePaths>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
