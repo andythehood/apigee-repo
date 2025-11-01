@@ -1,0 +1,18 @@
+<APIProxy revision="9" name="hapana-v2-client">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1762015129101</CreatedAt>
+    <LastModifiedAt>1762015129101</LastModifiedAt>
+    <BasePaths>/v2/customer</BasePaths>
+    <Policies>
+        <Policy>EV-ExtractHeaders</Policy>
+        <Policy>RF-Unauthorized</Policy>
+        <Policy>CORS-Policy</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
