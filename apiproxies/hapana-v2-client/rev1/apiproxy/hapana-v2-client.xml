@@ -2,10 +2,10 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1761976996588</CreatedAt>
-    <LastModifiedAt>1761978365273</LastModifiedAt>
+    <LastModifiedAt>1761978471224</LastModifiedAt>
     <BasePaths>/v2/customer</BasePaths>
     <Policies>
-        <Policy>EX-GetAccessId</Policy>
+        <Policy>EX-ExtractHeaders</Policy>
     </Policies>
     <ProxyEndpoints>
         <ProxyEndpoint>default</ProxyEndpoint>

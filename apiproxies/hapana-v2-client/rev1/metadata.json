@@ -1,11 +1,11 @@
 {
-  "pushedAt": "2025-11-01T06:26:18.091Z",
+  "pushedAt": "2025-11-01T06:28:03.067Z",
   "revision": "1",
   "authenticatedUser": "andy@aviato.consulting",
   "commitMessage": "UpdateApiProxyRevision: aviato-andy-apigee-dev-01/hapana-v2-client/1 andy@aviato.consulting",
   "files": [
     "apiproxy/hapana-v2-client.xml",
-    "apiproxy/policies/EX-GetAccessId.xml",
+    "apiproxy/policies/EX-ExtractHeaders.xml",
     "apiproxy/proxies/default.xml",
     "apiproxy/targets/default.xml"
   ]
