@@ -4,6 +4,7 @@
   <Properties/>
   <Source clearPayload="false">request</Source>
   <VariablePrefix>hapana</VariablePrefix>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
   <Header name="accessID">
     <Pattern ignoreCase="false">{accessID}</Pattern>
   </Header>
