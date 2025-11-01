@@ -10,9 +10,22 @@
     <Request/>
     <Response/>
   </PostFlow>
-  <Flows/>
+  <Flows>
+    <Flow name="AddClient">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/addClient") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="AllocatePackage">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/allocatePackage") and (request.verb = "POST")</Condition>
+    </Flow>
+  </Flows>
   <HTTPProxyConnection>
-    <BasePath>/hapana-v1</BasePath>
+    <BasePath>/v2/customer</BasePath>
     <Properties/>
   </HTTPProxyConnection>
   <RouteRule name="default">
