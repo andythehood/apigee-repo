@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProxyEndpoint name="default">
+  <Description/>
+  <FaultRules/>
+  <PreFlow name="PreFlow">
+    <Request>
+      <Step>
+        <Name>EV-ExtractHeaders</Name>
+      </Step>
+      <Step>
+        <Condition>hapana.accessID = null</Condition>
+        <Name>RF-Unauthorized</Name>
+      </Step>
+    </Request>
+    <Response/>
+  </PreFlow>
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response/>
+  </PostFlow>
+  <Flows>
+    <Flow name="Add Client">
+      <Description/>
+      <Request>
+      </Request>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/addClient") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Allocate Package">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/allocatePackage") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Future Bookings">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/futureBookings") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get All Client Corporate Purchases">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/corporate/purchases") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get All Client Purchases">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/client/purchases") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get Client By Site">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/client") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get Client Register Fields">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/registerFields") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Post Account Credit">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/accountCredit") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Post General Check-in">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/generalCheckin") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Update Client">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/updateClient") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Visit History">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/visitHistory") and (request.verb = "GET")</Condition>
+    </Flow>
+  </Flows>
+  <HTTPProxyConnection>
+    <BasePath>/v2/customer</BasePath>
+    <Properties/>
+  </HTTPProxyConnection>
+  <RouteRule name="default">
+    <TargetEndpoint>default</TargetEndpoint>
+  </RouteRule>
+</ProxyEndpoint>
