@@ -1,0 +1,11 @@
+{
+  "pushedAt": "2025-11-01T06:33:00.448Z",
+  "revision": "1",
+  "authenticatedUser": "andy@aviato.consulting",
+  "commitMessage": "CreateApiProxyRevision: aviato-andy-apigee-dev-01/hapana-v2-sites/1 andy@aviato.consulting",
+  "files": [
+    "apiproxy/hapana-v2-sites.xml",
+    "apiproxy/proxies/default.xml",
+    "apiproxy/targets/default.xml"
+  ]
+}
