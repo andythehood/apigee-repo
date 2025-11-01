@@ -1,0 +1,10 @@
+<SharedFlowBundle revision="1" name="hapana-sf-authentication">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1762034321912</CreatedAt>
+    <LastModifiedAt>1762034321912</LastModifiedAt>
+    <SharedFlows>
+        <SharedFlow>default</SharedFlow>
+    </SharedFlows>
+    <subType>SharedFlow</subType>
+</SharedFlowBundle>
