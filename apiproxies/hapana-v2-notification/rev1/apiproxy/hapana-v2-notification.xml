@@ -2,8 +2,8 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1761978818482</CreatedAt>
-    <LastModifiedAt>1761978818482</LastModifiedAt>
-    <BasePaths>/hapana-v1</BasePaths>
+    <LastModifiedAt>1761978967571</LastModifiedAt>
+    <BasePaths>/v2/pushnotification</BasePaths>
     <ProxyEndpoints>
         <ProxyEndpoint>default</ProxyEndpoint>
     </ProxyEndpoints>
