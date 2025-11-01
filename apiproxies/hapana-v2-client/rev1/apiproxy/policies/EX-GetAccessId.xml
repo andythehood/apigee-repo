@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ExtractVariables continueOnError="false" enabled="true" name="EX-GetAccessId">
+  <DisplayName>EX-GetAccessId</DisplayName>
+  <Properties/>
+  <Source clearPayload="false">request</Source>
+  <VariablePrefix>hapana</VariablePrefix>
+  <Header name="accessID">
+    <Pattern ignoreCase="false">{accessID}</Pattern>
+  </Header>
+  <Header name="siteID">
+    <Pattern ignoreCase="false">{siteID}</Pattern>
+  </Header>
+</ExtractVariables>
