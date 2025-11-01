@@ -11,17 +11,35 @@
     <Response/>
   </PostFlow>
   <Flows>
-    <Flow name="AddClient">
+    <Flow name="Add Client">
       <Description/>
       <Request/>
       <Response/>
       <Condition>(proxy.pathsuffix MatchesPath "/addClient") and (request.verb = "POST")</Condition>
     </Flow>
-    <Flow name="AllocatePackage">
+    <Flow name="Allocate Package">
       <Description/>
       <Request/>
       <Response/>
       <Condition>(proxy.pathsuffix MatchesPath "/allocatePackage") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Future Bookings">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/futureBookings") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get All Client Corporate Purchases">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/corporate/purchases") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get All Client Purchases">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/client/purchases") and (request.verb = "GET")</Condition>
     </Flow>
   </Flows>
   <HTTPProxyConnection>
