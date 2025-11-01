@@ -13,6 +13,6 @@
   <Flows/>
   <HTTPTargetConnection>
     <Properties/>
-    <URL>https://httpbin-418182175683.australia-southeast1.run.app</URL>
+    <URL>https://httpbin.org</URL>
   </HTTPTargetConnection>
 </TargetEndpoint>
