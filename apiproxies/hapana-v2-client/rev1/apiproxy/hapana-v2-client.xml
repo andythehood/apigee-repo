@@ -2,7 +2,7 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1761976996588</CreatedAt>
-    <LastModifiedAt>1761977588271</LastModifiedAt>
+    <LastModifiedAt>1761977894406</LastModifiedAt>
     <BasePaths>/v2/customer</BasePaths>
     <ProxyEndpoints>
         <ProxyEndpoint>default</ProxyEndpoint>

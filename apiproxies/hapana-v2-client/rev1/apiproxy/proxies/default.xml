@@ -41,6 +41,42 @@
       <Response/>
       <Condition>(proxy.pathsuffix MatchesPath "/client/purchases") and (request.verb = "GET")</Condition>
     </Flow>
+    <Flow name="Get Client By Site">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/client") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Get Client Register Fields">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/registerFields") and (request.verb = "GET")</Condition>
+    </Flow>
+    <Flow name="Post Account Credit">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/accountCredit") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Post General Check-in">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/generalCheckin") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Update Client">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/updateClient") and (request.verb = "POST")</Condition>
+    </Flow>
+    <Flow name="Visit History">
+      <Description/>
+      <Request/>
+      <Response/>
+      <Condition>(proxy.pathsuffix MatchesPath "/visitHistory") and (request.verb = "GET")</Condition>
+    </Flow>
   </Flows>
   <HTTPProxyConnection>
     <BasePath>/v2/customer</BasePath>
