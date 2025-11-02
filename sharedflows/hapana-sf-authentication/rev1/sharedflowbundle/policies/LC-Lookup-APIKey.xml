@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<LookupCache continueOnError="false" enabled="true" name="LC-Lookup-APIKey">
+  <DisplayName>LC-Lookup-APIKey</DisplayName>
+  <CacheKey>
+    <Prefix>custom_key_validation</Prefix>
+    <KeyFragment ref="hapana.accessID"/>
+    <KeyFragment ref="hapana.siteID"/>
+  </CacheKey>
+  <CacheResource/>
+  <Scope>Exclusive</Scope>
+  <AssignTo>cache.hit.flag</AssignTo>
+</LookupCache>

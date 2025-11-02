@@ -2,7 +2,12 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1762034321912</CreatedAt>
-    <LastModifiedAt>1762034321912</LastModifiedAt>
+    <LastModifiedAt>1762041807368</LastModifiedAt>
+    <Policies>
+        <Policy>LC-Lookup-APIKey</Policy>
+        <Policy>SC-Validate-APIKey</Policy>
+        <Policy>RF-CheckValidationResponse</Policy>
+    </Policies>
     <SharedFlows>
         <SharedFlow>default</SharedFlow>
     </SharedFlows>

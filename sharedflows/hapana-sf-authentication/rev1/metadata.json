@@ -1,10 +1,13 @@
 {
-  "pushedAt": "2025-11-01T21:58:57.321Z",
+  "pushedAt": "2025-11-02T00:03:47.007Z",
   "revision": "1",
   "authenticatedUser": "andy@aviato.consulting",
-  "commitMessage": "CreateSharedFlowRevision: aviato-andy-apigee-dev-01/hapana-sf-authentication/1 andy@aviato.consulting",
+  "commitMessage": "UpdateSharedFlowRevision: aviato-andy-apigee-dev-01/hapana-sf-authentication/1 andy@aviato.consulting",
   "files": [
     "sharedflowbundle/hapana-sf-authentication.xml",
+    "sharedflowbundle/policies/LC-Lookup-APIKey.xml",
+    "sharedflowbundle/policies/RF-CheckValidationResponse.xml",
+    "sharedflowbundle/policies/SC-Validate-APIKey.xml",
     "sharedflowbundle/sharedflows/default.xml"
   ]
 }
