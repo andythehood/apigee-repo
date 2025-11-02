@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <RaiseFault continueOnError="false" enabled="true" name="RF-CheckValidationResponse">
-  <DisplayName>RF-</DisplayName>
+  <DisplayName>RF-CheckValidationResponse</DisplayName>
   <Properties/>
   <FaultResponse>
     <Set>
       <Headers/>
-      <Payload contentType="text/plain"> </Payload>
-      <StatusCode>500</StatusCode>
+      <Payload contentType="application/json">
+      {
+        "code": 403
+      }
+       </Payload>
+      <StatusCode>403</StatusCode>
       <ReasonPhrase>Server Error</ReasonPhrase>
     </Set>
   </FaultResponse>
