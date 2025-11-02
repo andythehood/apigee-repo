@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SharedFlow name="default"/>
+<SharedFlow name="default">
+  <Step>
+    <Name>LC-Lookup-AccessID</Name>
+  </Step>
+  <Step>
+    <Condition>cache.hit.flag != "VALID"</Condition>
+    <Name>SC-Validate-AccessID</Name>
+  </Step>
+  <Step>
+    <Condition>(servicecallout.response.status.code != 200) AND (cache.hit.flag != "VALID")</Condition>
+    <Name>RF-CheckValidationResponse</Name>
+  </Step>
+  <Step>
+    <Condition>(servicecallout.response.status.code = 200) AND (cache.hit.flag != "VALID")</Condition>
+    <Name>PC-Populate-AccessID</Name>
+  </Step>
+</SharedFlow>

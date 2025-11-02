@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <PopulateCache continueOnError="false" enabled="true" name="PC-Populate-AccessID">
   <DisplayName>PC-Populate-AccessID</DisplayName>
-  <CacheResource>api_key_cache</CacheResource>
+  <CacheResource>authentication_cache</CacheResource>
   <Source>key.validation.success.value</Source>
   <Scope>Exclusive</Scope>
   <CacheKey>
