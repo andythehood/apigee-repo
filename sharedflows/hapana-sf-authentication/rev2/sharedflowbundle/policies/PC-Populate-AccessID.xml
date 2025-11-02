@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PopulateCache continueOnError="false" enabled="true" name="PC-Populate-AccessID">
+  <DisplayName>PC-Populate-AccessID</DisplayName>
+  <CacheResource>authentication_cache</CacheResource>
+  <Source>key.validation.success.value</Source>
+  <Scope>Exclusive</Scope>
+  <CacheKey>
+    <Prefix>custom_key_validation</Prefix>
+    <KeyFragment ref="request.header.accessID"/>
+    <KeyFragment ref="request.header.siteID"/>
+  </CacheKey>
+  <ExpirySettings>
+    <TimeoutInSec>600</TimeoutInSec>
+  </ExpirySettings>
+</PopulateCache>
