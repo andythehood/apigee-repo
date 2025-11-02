@@ -2,13 +2,14 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1762016002681</CreatedAt>
-    <LastModifiedAt>1762016002681</LastModifiedAt>
+    <LastModifiedAt>1762043321423</LastModifiedAt>
     <BasePaths>/v2/customer</BasePaths>
     <Policies>
         <Policy>EV-ExtractHeaders</Policy>
         <Policy>RF-Unauthorized</Policy>
         <Policy>CORS-Policy</Policy>
         <Policy>SA-SpikeArrest</Policy>
+        <Policy>FC-Authenticate-AccessID</Policy>
     </Policies>
     <ProxyEndpoints>
         <ProxyEndpoint>default</ProxyEndpoint>

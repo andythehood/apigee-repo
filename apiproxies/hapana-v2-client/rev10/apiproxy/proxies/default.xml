@@ -17,6 +17,9 @@
         <Condition>hapana.accessID = null</Condition>
         <Name>RF-Unauthorized</Name>
       </Step>
+      <Step>
+        <Name>FC-Authenticate-AccessID</Name>
+      </Step>
     </Request>
     <Response/>
   </PreFlow>
