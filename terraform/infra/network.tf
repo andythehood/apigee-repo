@@ -15,9 +15,7 @@ resource "google_compute_subnetwork" "apigee_vpc_apigee_subnet" {
   project       = data.google_project.apigee.project_id
 }
 
-
 # Reserve IP range for service networking
-
 locals {
   service_networking_peering_cidr_address = cidrhost(var.service_networking_peering_cidr, 0)
   service_networking_peering_cidr_length  = tonumber(split("/", var.service_networking_peering_cidr)[1])
@@ -45,6 +43,3 @@ resource "google_service_networking_connection" "apigee_private_connection" {
     google_project_service.servicenetworking
   ]
 }
-
-
-

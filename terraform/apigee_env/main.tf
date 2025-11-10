@@ -16,7 +16,6 @@ provider "google" {
   project = var.apigee_project_id
 }
 
-
 locals {
   # Check if we're in an environment workspace (not default)
   is_env_workspace = terraform.workspace != "default"
