@@ -1,6 +1,11 @@
-name: Terraform Plan on Pull Request
+name: Terraform Plan on Push or Pull Request
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - terraform/**  
   pull_request:
     branches:
       - main
