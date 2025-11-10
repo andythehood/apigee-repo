@@ -21,7 +21,7 @@ target_servers = [
       enabled = true
     }
   },
-    {
+  {
     name        = "logging-service"
     description = "Logging Service"
     host        = "httpbin.org"
@@ -30,5 +30,11 @@ target_servers = [
     s_sl_info = {
       enabled = true
     }
+  }
+]
+
+kvms = [
+  {
+    name = "kvm-credentials"
   }
 ]

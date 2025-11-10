@@ -28,8 +28,8 @@ jobs:
         id: filter
         with:
           filters: |
-            infra:
-              -  infra/**
+            terraform:
+              -  terraform/**
 
   dev:
     name: Plan with DEV environment

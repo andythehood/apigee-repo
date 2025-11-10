@@ -30,7 +30,13 @@ variable "target_servers" {
     s_sl_info = object({
       enabled = bool
     })
-
   }))
   description = "List of target server definitions."
+}
+
+variable "kvms" {
+  type = list(object({
+    name = string
+  }))
+  description = "List of key value map definitions."
 }
