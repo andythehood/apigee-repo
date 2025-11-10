@@ -14,18 +14,11 @@ locals {
   apigee_org_id = var.apigee_project_id
 }
 
-variable "region" {
-  description = "Region for resources"
-  type        = string
-}
-
-variable "service_networking_peering_cidr" {
-  type = string
-}
 
 variable "environment" {
-  description = "The SDLC environment name"
   type        = string
+  description = "Environment name for environment-scoped resources"
+  default     = null
 }
 
 variable "target_servers" {

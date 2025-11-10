@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - infra/**
+      - terraform/**
 
 jobs:
   changes:
@@ -47,6 +47,7 @@ jobs:
 
       - name: Terraform Init
         run: |
+          cd apigee_env
           terraform init -reconfigure
           terraform workspace select dev || terraform workspace new dev
           terraform validate

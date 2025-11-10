@@ -10,8 +10,15 @@ locals {
 }
 
 
+locals {
+  # Only create envs in default workspace
+  environments = terraform.workspace == "default" ? var.environments : []
+}
+
+
 # Apigee organization
 resource "google_apigee_organization" "apigee_org" {
+
   project_id          = data.google_project.apigee.project_id
   display_name        = "Apigee Organization for ${data.google_project.apigee.project_id}"
   description         = "Apigee Organization created via Terraform for DEV environment"
@@ -39,6 +46,7 @@ resource "google_apigee_organization" "apigee_org" {
 
 # Apigee instance
 resource "google_apigee_instance" "apigee_instance" {
+
   name     = "eval-instance"
   location = var.region
   org_id   = google_apigee_organization.apigee_org.id
@@ -54,60 +62,78 @@ resource "google_apigee_instance" "apigee_instance" {
 }
 
 # Apigee environments and groups
-resource "google_apigee_environment" "dev_env" {
-  name   = "dev"
-  org_id = google_apigee_organization.apigee_org.id
+resource "google_apigee_environment" "env" {
+
+
+  for_each = {
+    for env in var.environments : env.name => env
+  }
+
+  name        = each.value.name
+  description = each.value.description
+  org_id      = google_apigee_organization.apigee_org.id
 }
 
-resource "google_apigee_envgroup" "dev_group" {
-  name   = "dev-group"
-  org_id = google_apigee_organization.apigee_org.id
-  hostnames = [
-    "dev-34.111.216.9.nip.io",
-  ]
+resource "google_apigee_envgroup" "envgroup" {
+
+  for_each = {
+    for env in local.environments : env.name => env
+  }
+
+  name      = "${each.value.name}-group"
+  org_id    = google_apigee_organization.apigee_org.id
+  hostnames = each.value.hostnames
 }
 
-resource "google_apigee_environment" "prod_env" {
-  name   = "prod"
-  org_id = google_apigee_organization.apigee_org.id
-}
+# resource "google_apigee_environment" "prod_env" {
+#   name   = "prod"
+#   org_id = google_apigee_organization.apigee_org.id
+# }
 
-resource "google_apigee_envgroup" "prod_group" {
-  name   = "prod-group"
-  org_id = google_apigee_organization.apigee_org.id
-  hostnames = [
-    "prod-34.111.216.9.nip.io",
-  ]
-}
+# resource "google_apigee_envgroup" "prod_group" {
+#   name   = "prod-group"
+#   org_id = google_apigee_organization.apigee_org.id
+#   hostnames = [
+#     "prod-34.111.216.9.nip.io",
+#   ]
+# }
 
 
-# Eval Orgs only support a maximum of two environments and environment groups
+# # Eval Orgs only support a maximum of two environments and environment groups
 
 # Attach environments to environment groups
-resource "google_apigee_envgroup_attachment" "attach_dev" {
-  envgroup_id = google_apigee_envgroup.dev_group.id
-  environment = google_apigee_environment.dev_env.name
+resource "google_apigee_envgroup_attachment" "envgroup_attachment" {
+
+  for_each = {
+    for env in var.environments : env.name => env
+  }
+  envgroup_id = google_apigee_envgroup.envgroup[each.value.name].id
+  environment = google_apigee_environment.env[each.value.name].name
 }
 
-resource "google_apigee_envgroup_attachment" "attach_prod" {
-  envgroup_id = google_apigee_envgroup.prod_group.id
-  environment = google_apigee_environment.prod_env.name
-}
+# resource "google_apigee_envgroup_attachment" "attach_prod" {
+#   envgroup_id = google_apigee_envgroup.prod_group.id
+#   environment = google_apigee_environment.prod_env.name
+# }
 
 # Attach environments to instance
-# This doesn't work for Evaluation
+# This sometimes doesn't work for Evaluation
 
-resource "google_apigee_instance_attachment" "attach_dev" {
+resource "google_apigee_instance_attachment" "instance_attachment" {
+
+  for_each = {
+    for env in var.environments : env.name => env
+  }
   instance_id = google_apigee_instance.apigee_instance.id
-  environment = google_apigee_environment.dev_env.name
+  environment = google_apigee_environment.env[each.value.name].name
 }
 
-resource "google_apigee_instance_attachment" "attach_prod" {
-  instance_id = google_apigee_instance.apigee_instance.id
-  environment = google_apigee_environment.prod_env.name
+# resource "google_apigee_instance_attachment" "attach_prod" {
+#   instance_id = google_apigee_instance.apigee_instance.id
+#   environment = google_apigee_environment.prod_env.name
 
-  depends_on = [google_apigee_instance_attachment.attach_dev]
-}
+#   depends_on = [google_apigee_instance_attachment.attach_dev]
+# }
 
 # resource "google_apigee_target_server" "gateway_service" {
 #   name        = "gateway-service"
@@ -121,20 +147,12 @@ resource "google_apigee_instance_attachment" "attach_prod" {
 #   }
 # }
 
-resource "google_apigee_target_server" "default" {
-  for_each = {
-    for ts in var.target_servers : ts.name => ts
-  }
 
-  name        = each.value.name
-  description = each.value.description
-  host        = each.value.host
-  port        = each.value.port
+output "apigee_org" {
 
-  s_sl_info {
-    enabled = each.value.s_sl_info.enabled
-  }
-
-  env_id = "organizations/${local.apigee_org_id}/environments/${var.environment}"
+  value = google_apigee_organization.apigee_org.id
 }
 
+output "apigee_service_attachment" {
+  value = google_apigee_instance.apigee_instance.service_attachment
+}
