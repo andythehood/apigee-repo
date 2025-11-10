@@ -52,7 +52,7 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd apigee_env
+          cd terraform/apigee_env
           terraform init -reconfigure
           terraform workspace select dev || terraform workspace new dev
           terraform validate
