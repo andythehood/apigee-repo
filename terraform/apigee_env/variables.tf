@@ -1,4 +1,3 @@
-
 variable "host_project_id" {
   description = "The ID of the Host project"
   type        = string

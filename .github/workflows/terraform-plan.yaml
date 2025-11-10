@@ -114,8 +114,13 @@ jobs:
       - deploy-infra
     # if: ${{ needs.detect-changes.outputs.envs == 'true' }}
     # if: needs.detect-changes.outputs.directories != '[]'
-    if: ${{ contains(needs.detect-changes.outputs.filters, 'envs') }}
+    # if: ${{ contains(needs.detect-changes.outputs.filters, 'envs') }}
 
+    if: |
+      always() &&
+      ${{ contains(needs.detect-changes.outputs.filters, 'envs') }} &&
+      ( ${{ needs.deploy-infra.result == 'success' }} || ${{ needs.deploy-infra.result == 'skipped' }} )
+    
     strategy:
       matrix:
         env: [dev, prod]
