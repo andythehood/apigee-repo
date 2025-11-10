@@ -14,7 +14,6 @@ locals {
   apigee_org_id = var.apigee_project_id
 }
 
-
 variable "environment" {
   type        = string
   description = "Environment name for environment-scoped resources"
