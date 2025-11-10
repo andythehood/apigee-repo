@@ -1,5 +1,3 @@
-
-
 resource "google_apigee_target_server" "target_server" {
 
   count = local.is_env_workspace ? length(var.target_servers) : 0
@@ -22,7 +20,3 @@ resource "google_apigee_environment_keyvaluemaps" "kvm" {
   name   = var.kvms[count.index].name
   env_id = "organizations/${local.apigee_org_id}/environments/${var.environment}"
 }
-
-
-
-
