@@ -56,3 +56,17 @@ resource "google_project_service" "secretmanager" {
   service            = "secretmanager.googleapis.com"
   disable_on_destroy = false
 }
+
+# Enable Bigquery API
+resource "google_project_service" "bigquery" {
+  project            = data.google_project.apigee.project_id
+  service            = "bigquery.googleapis.com"
+  disable_on_destroy = false
+}
+
+# Enable IAP API
+resource "google_project_service" "iap" {
+  project            = data.google_project.apigee.project_id
+  service            = "iap.googleapis.com"
+  disable_on_destroy = false
+}

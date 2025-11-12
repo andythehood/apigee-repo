@@ -1,0 +1,152 @@
+name: Apigee Deploy Proxy on Git Tag
+
+on:
+  push:
+    tags:
+      - apigee/apiproxy/**
+      - apigee/sharedflow/**
+
+jobs:
+  parse:
+    name: Parse and validate Tag
+    runs-on: ubuntu-latest
+    outputs:
+      type: ${{ steps.parse.outputs.type }}
+      name: ${{ steps.parse.outputs.name }}
+      env: ${{ steps.parse.outputs.env }}
+      rev: ${{ steps.parse.outputs.rev }}
+
+    # env:
+    #   APIGEE_ORG: my-apigee-org
+    #   APIGEE_PROJECT: my-gcp-project
+    #   APIGEE_REGION: australia-southeast1
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Parse tag
+        id: parse
+        # Required format is one of 
+        # - apigee/apiproxy/name/env/revision
+        # - apigee/sharedflow/name/env/revision
+        # e.g.
+        # - apigee/apiproxy/hapana-v2-client/prod/12
+
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          echo "Tag: $TAG"
+          # Regex: type/name/env/vX.Y.Z
+          if [[ "$TAG" =~ ^apigee/(apiproxy|sharedflow)/([^/]+)/(staging|qa|prod)/([0-9]+)$ ]]; then
+            TYPE="${BASH_REMATCH[1]}"
+            NAME="${BASH_REMATCH[2]}"
+            ENV="${BASH_REMATCH[3]}"
+            REV="${BASH_REMATCH[4]}"
+            echo "type=$TYPE" >> $GITHUB_OUTPUT
+            echo "name=$NAME" >> $GITHUB_OUTPUT
+            echo "env=$ENV" >> $GITHUB_OUTPUT
+            echo "rev=$REV" >> $GITHUB_OUTPUT
+            echo "✅ Valid tag detected: type=$TYPE, name=$NAME, env=$ENV, rev=$REV"
+          else
+            echo "❌ ERROR: Invalid tag format: $TAG"
+            echo "Expected format: apigee/proxy/<name>/<env>/<revision>"
+            echo "or apigee/sharedflow/<name>/<env>/<revision>"
+            echo "where env is one of staging, qa or prod"
+            exit 1
+          fi
+
+      - name: Display parsed values
+        run: |
+          echo "Type: ${{ steps.parse.outputs.type }}"
+          echo "Name: ${{ steps.parse.outputs.name }}"
+          echo "Env: ${{ steps.parse.outputs.env }}"
+          echo "Revision: ${{ steps.parse.outputs.rev }}"
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: parse
+    if: ${{ needs.parse.outputs.env == 'dev' }}
+    environment: dev
+    steps:
+      - uses: actions/checkout@v4
+      # - uses: ./.github/actions/deploy-proxy
+      #   with:
+      #     proxy_name: ${{ needs.parse.outputs.name }}
+      #     environment: dev
+      #     project_id: my-dev-project
+      #     org: my-apigee-org
+
+  # deploy-staging:
+  #   needs: parse
+  #   if: ${{ needs.parse.outputs.env == 'staging' }}
+  #   environment: staging
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/deploy-proxy
+  #       with:
+  #         proxy_name: ${{ needs.parse.outputs.name }}
+  #         environment: staging
+  #         project_id: my-staging-project
+  #         org: my-apigee-org
+
+  deploy-prod:
+    needs: parse
+    if: ${{ needs.parse.outputs.env == 'prod' }}
+    environment: prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/deploy-proxy
+        with:
+          proxy_name: ${{ needs.parse.outputs.name }}
+          environment: prod
+          project_id: my-prod-project
+          org: my-apigee-org
+
+
+  # promote:
+  #   name: Promote Apigee Proxy
+  #   needs: init
+  #   runs-on: ubuntu-latest
+  #   environment: ${{ steps.init.outputs.env }}
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Apigee CLI
+  #       run: |
+  #         curl -LO https://github.com/apigee/apigeecli/releases/latest/download/apigeecli_linux_amd64.tar.gz
+  #         tar -xzf apigeecli_linux_amd64.tar.gz
+  #         sudo mv apigeecli /usr/local/bin/
+
+  #     - name: Authenticate to GCP
+  #       uses: google-github-actions/auth@v2
+  #       with:
+  #         credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+  #     - name: Get latest proxy revision in dev
+  #       id: getrev
+  #       run: |
+  #         REVISION=$(apigeecli apis get --name ${{ steps.parse.outputs.proxy }} --org $APIGEE_ORG \
+  #           --token "$(gcloud auth print-access-token)" \
+  #           --json | jq '.revision[-1]')
+  #         echo "revision=$REVISION" >> $GITHUB_OUTPUT
+  #         echo "Latest revision: $REVISION"
+
+  #     - name: Deploy to target environment
+  #       run: |
+  #         apigeecli apis deploy --name ${{ steps.parse.outputs.proxy }} \
+  #           --env ${{ steps.parse.outputs.env }} \
+  #           --rev ${{ steps.getrev.outputs.revision }} \
+  #           --org $APIGEE_ORG \
+  #           --token "$(gcloud auth print-access-token)" \
+  #           --override true
+
+  #     - name: Confirm deployment
+  #       run: |
+  #         apigeecli deployments get --name ${{ steps.parse.outputs.proxy }} \
+  #           --env ${{ steps.parse.outputs.env }} \
+  #           --org $APIGEE_ORG \
+  #           --token "$(gcloud auth print-access-token)"
+

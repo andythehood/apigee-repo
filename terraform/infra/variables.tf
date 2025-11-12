@@ -38,6 +38,11 @@ variable "environments" {
   }))
 }
 
+
+variable "dataset_name" {
+  description = "BigQuery Dataset name"
+  type = string
+}
 # variable "target_servers" {
 #   type = list(object({
 #     name        = string
