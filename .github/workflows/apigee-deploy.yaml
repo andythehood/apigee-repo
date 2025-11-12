@@ -99,10 +99,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/deploy-proxy
         with:
+          org: ${{ vars.APIGEE_ORG}}
           proxy_name: ${{ needs.parse.outputs.name }}
-          environment: prod
-          project_id: my-prod-project
-          org: my-apigee-org
+          environment: default
 
 
   # promote:

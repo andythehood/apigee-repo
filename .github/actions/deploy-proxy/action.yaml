@@ -1,0 +1,58 @@
+name: "Deploy Apigee Proxy"
+description: "Deploys a given Apigee proxy to a target environment"
+inputs:
+  proxy_name:
+    required: true
+    description: "Name of the Apigee proxy to deploy"
+  environment:
+    required: true
+    description: "Target Apigee environment (default: default)"
+    default: default
+  revision:
+    required: false
+    description: "Proxy revision number (optional, will use latest if omitted)"
+  org:
+    required: true
+    description: "Apigee organization name"
+runs:
+  using: "composite"
+  steps:
+    - name: Authenticate to GCP
+      shell: bash
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" > key.json
+        gcloud auth activate-service-account --key-file=key.json
+        gcloud config set project "${{ inputs.project_id }}"
+
+    - name: Get latest revision (if not provided)
+      id: revision
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.revision }}" ]; then
+          echo "revision=${{ inputs.revision }}" >> $GITHUB_OUTPUT
+        else
+          REV=$(apigeecli apis list --org "${{ inputs.org }}" --name "${{ inputs.proxy_name }}" \
+                --token "$(gcloud auth print-access-token)" \
+                --json | jq -r '.[] | .revision[-1]')
+          echo "revision=$REV" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Deploy proxy
+      shell: bash
+      run: |
+        echo "Deploying proxy '${{ inputs.proxy_name }}' revision ${{ steps.revision.outputs.revision }} to '${{ inputs.environment }}'"
+        apigeecli apis deploy \
+          --org "${{ inputs.org }}" \
+          --name "${{ inputs.proxy_name }}" \
+          --env "${{ inputs.environment }}" \
+          --rev "${{ steps.revision.outputs.revision }}" \
+          --override true \
+          --token "$(gcloud auth print-access-token)"
+
+    - name: Verify deployment
+      shell: bash
+      run: |
+        apigeecli apis getdeployments \
+          --org "${{ inputs.org }}" \
+          --name "${{ inputs.proxy_name }}" \
+          --token "$(gcloud auth print-access-token)"
