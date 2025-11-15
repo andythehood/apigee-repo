@@ -122,9 +122,17 @@ jobs:
       - name: Import ApigeeX Proxy
         id: import
         run: |
-          $COMMAND --default-token -o ${{ vars.APIGEE_ORG }}  --folder ./bundle
-          # REVISION=$(apigeecli apis get --default-token -o "$APIGEE_X_ORG" --name ${{ needs.parse.outputs.name  }} | jq -r '.latestRevisionId')
-          # echo "revision=$REVISION" >> "$GITHUB_OUTPUT"          
+
+          case "${{ needs.parse.outputs.type }}" in
+            apiproxy) RESOURCE="apis";;
+            sharedflow) RESOURCE="sharedflows";;
+            *) echo "❌ Unknown type"; exit 1 ;;
+          esac
+
+          apigeecli $RESOURCE import --default-token -o ${{ vars.APIGEE_ORG }}  --folder ./bundle
+          REVISION=$(apigeecli "$RESOURCE" get --default-token -o "${{ vars.APIGEE_ORG }}" --name ${{ needs.parse.outputs.name  }} | jq -r '.latestRevisionId')
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"          
+          echo "revision=$REVISION"          
 
       # - name: Import proxy bundle
       #   env:
