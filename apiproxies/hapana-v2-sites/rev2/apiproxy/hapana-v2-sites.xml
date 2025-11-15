@@ -2,7 +2,7 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1763166629530</CreatedAt>
-    <LastModifiedAt>1763166629530</LastModifiedAt>
+    <LastModifiedAt>1763169084374</LastModifiedAt>
     <BasePaths>/hapana-v1</BasePaths>
     <ProxyEndpoints>
         <ProxyEndpoint>default</ProxyEndpoint>
