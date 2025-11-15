@@ -37,7 +37,7 @@ jobs:
         run: |
           TAG="${GITHUB_REF_NAME}"
           echo "Tag: $TAG"
-          # Regex: type/name/env/vX.Y.Z
+          # Regex: type/name/env/xx
           if [[ "$TAG" =~ ^apigee/(apiproxy|sharedflow)/([^/]+)/(sit|prod)/([0-9]+)$ ]]; then
             TYPE="${BASH_REMATCH[1]}"
             NAME="${BASH_REMATCH[2]}"
@@ -112,12 +112,12 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.APIGEE_SA_KEY }}'
-
+          
       - name: Install Apigee CLI
         run: |
-          curl -sLO https://github.com/apigee/apigeecli/releases/download/v2.15.0/apigeecli_v2.15.0_Linux_x86_64.zip
-          unzip apigeecli_v2.15.0_Linux_x86_64.zip
-          sudo mv apigeecli_v2.15.0_Linux_x86_64/apigeecli /usr/local/bin/
+          curl -sLO https://github.com/apigee/apigeecli/releases/download/v2.16.0/apigeecli_v2.15.0_Linux_x86_64.zip
+          unzip apigeecli_v2.16.0_Linux_x86_64.zip
+          sudo mv apigeecli_v2.16.0_Linux_x86_64/apigeecli /usr/local/bin/
     
       - name: Import ApigeeX Proxy
         id: import
@@ -146,63 +146,63 @@ jobs:
 
 
   deploy-prod:
+    runs-on: ubuntu-latest
     needs: parse
     if: ${{ needs.parse.outputs.env == 'prod' }}
     environment: prod
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: ./.github/actions/deploy-proxy
         with:
-          org: ${{ vars.APIGEE_ORG}}
-          proxy_name: ${{ needs.parse.outputs.name }}
-          environment: default
+          ref: ${{ needs.parse.outputs.sha }}
+          fetch-depth: 0
 
+      - name: Build Apigee proxy/sharedflow bundle
+        run: |
+          case "${{ needs.parse.outputs.type }}" in
+            apiproxy) BASE="apiproxies" ; COMMAND="apigeecli apis import";;
+            sharedflow) BASE="sharedflows" ; COMMAND="apigeecli sharedflows import";;
+            *) echo "❌ Unknown type"; exit 1 ;;
+          esac
 
-  # promote:
-  #   name: Promote Apigee Proxy
-  #   needs: init
-  #   runs-on: ubuntu-latest
-  #   environment: ${{ steps.init.outputs.env }}
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v4
+          mkdir bundle
+          cd $BASE/${{ needs.parse.outputs.name }}/rev${{ needs.parse.outputs.rev }}
+          zip -r ../../../bundle/${{ needs.parse.outputs.name }}.zip ${{ needs.parse.outputs.type }}/
+          echo "Created ${{ needs.parse.outputs.name }}.zip"
 
-  #     - name: Set up Apigee CLI
-  #       run: |
-  #         curl -LO https://github.com/apigee/apigeecli/releases/latest/download/apigeecli_linux_amd64.tar.gz
-  #         tar -xzf apigeecli_linux_amd64.tar.gz
-  #         sudo mv apigeecli /usr/local/bin/
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.APIGEE_SA_KEY }}'
 
-  #     - name: Authenticate to GCP
-  #       uses: google-github-actions/auth@v2
-  #       with:
-  #         credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - name: Install Apigee CLI
+        run: |
+          curl -sLO https://github.com/apigee/apigeecli/releases/download/v2.16.0/apigeecli_v2.15.0_Linux_x86_64.zip
+          unzip apigeecli_v2.16.0_Linux_x86_64.zip
+          sudo mv apigeecli_v2.16.0_Linux_x86_64/apigeecli /usr/local/bin/
+    
+      - name: Import ApigeeX Proxy
+        id: import
+        run: |
 
-  #     - name: Get latest proxy revision in dev
-  #       id: getrev
-  #       run: |
-  #         REVISION=$(apigeecli apis get --name ${{ steps.parse.outputs.proxy }} --org $APIGEE_ORG \
-  #           --token "$(gcloud auth print-access-token)" \
-  #           --json | jq '.revision[-1]')
-  #         echo "revision=$REVISION" >> $GITHUB_OUTPUT
-  #         echo "Latest revision: $REVISION"
+          case "${{ needs.parse.outputs.type }}" in
+            apiproxy) RESOURCE="apis";;
+            sharedflow) RESOURCE="sharedflows";;
+            *) echo "❌ Unknown type"; exit 1 ;;
+          esac
 
-  #     - name: Deploy to target environment
-  #       run: |
-  #         apigeecli apis deploy --name ${{ steps.parse.outputs.proxy }} \
-  #           --env ${{ steps.parse.outputs.env }} \
-  #           --rev ${{ steps.getrev.outputs.revision }} \
-  #           --org $APIGEE_ORG \
-  #           --token "$(gcloud auth print-access-token)" \
-  #           --override true
+          apigeecli $RESOURCE import --default-token -o ${{ vars.APIGEE_ORG }}  --folder ./bundle
+          REVISION=$(apigeecli "$RESOURCE" get --default-token -o "${{ vars.APIGEE_ORG }}" --name ${{ needs.parse.outputs.name  }} | jq -r '.latestRevisionId')
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"          
+          echo "revision=$REVISION"          
 
-  #     - name: Confirm deployment
-  #       run: |
-  #         apigeecli deployments get --name ${{ steps.parse.outputs.proxy }} \
-  #           --env ${{ steps.parse.outputs.env }} \
-  #           --org $APIGEE_ORG \
-  #           --token "$(gcloud auth print-access-token)"
-
+      # - name: Import proxy bundle
+      #   env:
+      #     APIGEE_ORG: ${{ vars.APIGEE_ORG }}
+      #     PROXY_NAME: ${{ steps.parse.outputs.proxy }}
+      #     APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
+      #   run: |
+      #     apigeecli apis import --org "$APIGEE_ORG" --name "$PROXY_NAME" --source bundle.zip --token "$APIGEE_TOKEN"
+      #     REV=$(apigeecli apis list --org "$APIGEE_ORG" --name "$PROXY_NAME" --json --token "$APIGEE_TOKEN" | jq -r '.[].revision[-1]')
+      #     echo "Imported new revision $REV"
 
