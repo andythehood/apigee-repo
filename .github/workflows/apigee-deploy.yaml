@@ -104,7 +104,7 @@ jobs:
 
           mkdir bundle
           cd $BASE/${{ needs.parse.outputs.name }}/rev${{ needs.parse.outputs.rev }}
-          zip -r ../../bundle/${{ needs.parse.outputs.name }}.zip ${{ needs.parse.outputs.type }}/
+          zip -r ../../../bundle/${{ needs.parse.outputs.name }}.zip ${{ needs.parse.outputs.type }}/
           echo "Created ${{ needs.parse.outputs.name }}.zip"
 
       - name: Authenticate to Google Cloud
