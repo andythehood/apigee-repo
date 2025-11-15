@@ -1,0 +1,9 @@
+{
+  "pushedAt": "2025-11-15T00:30:41.855Z",
+  "type": "apiproxy",
+  "name": "hapana-v2-sites",
+  "revision": "2",
+  "sha": "8019187a906b294221e2f8dbc07f6aa9b94808a5",
+  "authenticatedUser": "andy@aviato.consulting",
+  "commitMessage": "CreateApiProxyRevision: aviato-andy-apigee-dev-01/hapana-v2-sites/2 andy@aviato.consulting"
+}
