@@ -1,5 +1,0 @@
-serviceaccount: apigee-proxy-sa@${APIGEE_ORG}.iam.gserviceaccount.com
-environments:
-  main: [private, eval, public]
-  sit: [private, eval]
-  prod: [private, partner, eval]

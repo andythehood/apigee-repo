@@ -1,9 +1,0 @@
-{
-  "pushed_at": "2025-10-12T08:43:20.224Z",
-  "commit_message": "Export Apigee aviato-andy-apigee-dev/audit-v1 rev1 (event: google.cloud.apigee.v1.ApiProxyService.CreateApiProxyRevision)",
-  "files": [
-    "apiproxy/audit-v1.xml",
-    "apiproxy/proxies/default.xml",
-    "apiproxy/targets/default.xml"
-  ]
-}

@@ -1,5 +1,0 @@
-environments:
-  dev: [private]
-  sit: []
-  preprod: [private]
-  prod: [private]
