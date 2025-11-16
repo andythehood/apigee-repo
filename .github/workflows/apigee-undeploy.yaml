@@ -1,0 +1,78 @@
+name: Apigee Undeploy Proxy on delete of Git Tag
+
+on:
+  delete: 
+
+
+
+    # tags:
+
+    # tags:
+    #   - apigee/apiproxy/**
+    #   # - "apigee/sharedflow/**"
+
+env:
+  APIGEE_ENV: default
+  APIGEE_SA: apigee-proxy-sa
+
+jobs:
+  parse:
+    if: |
+      github.event.ref_type == 'tag' && 
+      (startsWith(github.event.ref, 'apigee/apiproxy/') || startsWith(github.event.ref, 'apigee/sharedflow/'))
+    name: Parse and validate Tag
+    runs-on: ubuntu-latest
+    outputs:
+      type: ${{ steps.parse.outputs.type }}
+      name: ${{ steps.parse.outputs.name }}
+      env: ${{ steps.parse.outputs.env }}
+      rev: ${{ steps.parse.outputs.rev }}
+      # sha: ${{ steps.lookup.outputs.sha }}
+
+    steps:
+
+      - name: Log Deleted Tag Name
+        run: |
+          echo "The deleted tag is: ${{ github.event.ref }}"
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Parse tag
+        id: parse
+        # Required format is one of 
+        # - apigee/apiproxy/name/env/revision
+        # - apigee/sharedflow/name/env/revision
+        # e.g.
+        # - apigee/apiproxy/hapana-v2-client/prod/12
+
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          echo "Tag: $TAG"
+          # Regex: type/name/env/xx
+          if [[ "$TAG" =~ ^apigee/(apiproxy|sharedflow)/([^/]+)/(sit|prod)/([0-9]+)(?:/([^/]+))?$ ]]; then
+            TYPE="${BASH_REMATCH[1]}"
+            NAME="${BASH_REMATCH[2]}"
+            ENV="${BASH_REMATCH[3]}"
+            REV="${BASH_REMATCH[4]}"
+            SUFFIX="${BASH_REMATCH[5]}"
+            echo "type=$TYPE" >> $GITHUB_OUTPUT
+            echo "name=$NAME" >> $GITHUB_OUTPUT
+            echo "env=$ENV" >> $GITHUB_OUTPUT
+            echo "rev=$REV" >> $GITHUB_OUTPUT
+            echo "suffix=$SUFFIX" >> $GITHUB_OUTPUT
+            echo "✅ Valid tag detected: type=$TYPE, name=$NAME, env=$ENV, rev=$REV"
+          else
+            echo "❌ ERROR: Invalid tag format: $TAG"
+            echo "Expected format: apigee/proxy/<name>/<env>/<revision>"
+            echo "or apigee/sharedflow/<name>/<env>/<revision>"
+            echo "where env is one of staging, qa or prod"
+            exit 1
+          fi
+
+      - name: Display parsed values
+        run: |
+          echo "Type: ${{ steps.parse.outputs.type }}"
+          echo "Name: ${{ steps.parse.outputs.name }}"
+          echo "Env: ${{ steps.parse.outputs.env }}"
+          echo "Revision: ${{ steps.parse.outputs.rev }}"
