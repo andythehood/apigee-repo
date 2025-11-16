@@ -6,6 +6,10 @@ on:
       - apigee/apiproxy/**
       - apigee/sharedflow/**
 
+env:
+  APIGEE_ENV: default
+  APIGEE_SA: apigee-proxy-sa
+
 jobs:
   parse:
     name: Parse and validate Tag
@@ -16,11 +20,6 @@ jobs:
       env: ${{ steps.parse.outputs.env }}
       rev: ${{ steps.parse.outputs.rev }}
       sha: ${{ steps.lookup.outputs.sha }}
-
-    # env:
-    #   APIGEE_ORG: my-apigee-org
-    #   APIGEE_PROJECT: my-gcp-project
-    #   APIGEE_REGION: australia-southeast1
 
     steps:
       - name: Checkout repo
@@ -119,7 +118,7 @@ jobs:
           unzip apigeecli_v2.16.0_Linux_x86_64.zip
           sudo mv apigeecli_v2.16.0_Linux_x86_64/apigeecli /usr/local/bin/
     
-      - name: Import ApigeeX Proxy
+      - name: Import ApigeeX Proxy/Sharedflow
         id: import
         run: |
           case "${{ needs.parse.outputs.type }}" in
@@ -132,6 +131,25 @@ jobs:
           REVISION=$(apigeecli "$RESOURCE" get --default-token -o "${{ vars.APIGEE_ORG }}" --name ${{ needs.parse.outputs.name  }} | jq -r '.latestRevisionId')
           echo "revision=$REVISION" >> "$GITHUB_OUTPUT"          
           echo "revision=$REVISION"          
+
+      - name: Deploy ApigeeX Proxy/Sharedflow
+        id: deploy
+        run: |
+          case "${{ needs.parse.outputs.type }}" in
+            apiproxy) RESOURCE="apis";;
+            sharedflow) RESOURCE="sharedflows";;
+            *) echo "❌ Unknown type"; exit 1 ;;
+          esac
+          echo "Using service account: $APIGEE_SA@${{ vars.APIGEE_ORG }}.iam.gserviceaccount.com"
+          apigeecli $RESOURCE deploy \
+            --default-token \
+            --org "${{ vars.APIGEE_ORG }}" \
+            --env "$APIGEE_ENV" \
+            --name "${{ needs.parse.outputs.name  }}" \
+            --rev ${{ steps.import.outputs.revision }} \
+            --sa "$APIGEE_SA@${{ vars.APIGEE_ORG }}.iam.gserviceaccount.com" \
+            --ovr
+
 
       # - name: Import proxy bundle
       #   env:
@@ -194,13 +212,21 @@ jobs:
           echo "revision=$REVISION" >> "$GITHUB_OUTPUT"          
           echo "revision=$REVISION"          
 
-      # - name: Import proxy bundle
-      #   env:
-      #     APIGEE_ORG: ${{ vars.APIGEE_ORG }}
-      #     PROXY_NAME: ${{ steps.parse.outputs.proxy }}
-      #     APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
-      #   run: |
-      #     apigeecli apis import --org "$APIGEE_ORG" --name "$PROXY_NAME" --source bundle.zip --token "$APIGEE_TOKEN"
-      #     REV=$(apigeecli apis list --org "$APIGEE_ORG" --name "$PROXY_NAME" --json --token "$APIGEE_TOKEN" | jq -r '.[].revision[-1]')
-      #     echo "Imported new revision $REV"
+      - name: Deploy ApigeeX Proxy/Sharedflow
+        id: deploy
+        run: |
+          case "${{ needs.parse.outputs.type }}" in
+            apiproxy) RESOURCE="apis";;
+            sharedflow) RESOURCE="sharedflows";;
+            *) echo "❌ Unknown type"; exit 1 ;;
+          esac
+          echo "Using service account: $APIGEE_SA@${{ vars.APIGEE_ORG }}.iam.gserviceaccount.com"
+          apigeecli $RESOURCE deploy \
+            --default-token \
+            --org "${{ vars.APIGEE_ORG }}" \
+            --env "$APIGEE_ENV" \
+            --name "${{ needs.parse.outputs.name  }}" \
+            --rev ${{ steps.import.outputs.revision }} \
+            --sa "$APIGEE_SA@${{ vars.APIGEE_ORG }}.iam.gserviceaccount.com" \
+            --ovr
 
