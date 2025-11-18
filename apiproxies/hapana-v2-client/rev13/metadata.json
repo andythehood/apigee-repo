@@ -1,0 +1,16 @@
+{
+  "pushedAt": "2025-11-18T02:51:03.754Z",
+  "revision": "13",
+  "authenticatedUser": "andy@aviato.consulting",
+  "commitMessage": "CreateApiProxyRevision: aviato-andy-apigee-dev-01/hapana-v2-client/13 andy@aviato.consulting",
+  "files": [
+    "apiproxy/hapana-v2-client.xml",
+    "apiproxy/policies/CORS-Policy.xml",
+    "apiproxy/policies/EV-ExtractHeaders.xml",
+    "apiproxy/policies/FC-Authenticate-AccessID.xml",
+    "apiproxy/policies/RF-Unauthorized.xml",
+    "apiproxy/policies/SA-SpikeArrest.xml",
+    "apiproxy/proxies/default.xml",
+    "apiproxy/targets/default.xml"
+  ]
+}
