@@ -1,0 +1,16 @@
+<SharedFlowBundle revision="6" name="hapana-sf-authentication">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1763434069539</CreatedAt>
+    <LastModifiedAt>1763434069539</LastModifiedAt>
+    <Policies>
+        <Policy>LC-Lookup-AccessID</Policy>
+        <Policy>SC-Validate-AccessID</Policy>
+        <Policy>RF-CheckValidationResponse</Policy>
+        <Policy>PC-Populate-AccessID</Policy>
+    </Policies>
+    <SharedFlows>
+        <SharedFlow>default</SharedFlow>
+    </SharedFlows>
+    <subType>SharedFlow</subType>
+</SharedFlowBundle>
