@@ -2,7 +2,7 @@
     <DisplayName></DisplayName>
     <Description></Description>
     <CreatedAt>1763434148320</CreatedAt>
-    <LastModifiedAt>1763434148320</LastModifiedAt>
+    <LastModifiedAt>1763631954215</LastModifiedAt>
     <BasePaths>/v2/customer</BasePaths>
     <Policies>
         <Policy>EV-ExtractHeaders</Policy>
