@@ -1,0 +1,13 @@
+<APIProxy revision="2" name="hapana-v2-notification">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1763632339463</CreatedAt>
+    <LastModifiedAt>1763632339463</LastModifiedAt>
+    <BasePaths>/v2/pushnotification</BasePaths>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
