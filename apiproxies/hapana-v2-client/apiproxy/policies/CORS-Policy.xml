@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CORS continueOnError="false" enabled="true" name="CORS-Policy">
+  <DisplayName>CORS-Policy</DisplayName>
+  <GeneratePreflightResponse>true</GeneratePreflightResponse>
+  <AllowOrigins>https://www.my-allowed-domain.com, https://another-allowed-app.net</AllowOrigins>
+  <AllowMethods>GET, POST, PUT, DELETE, OPTIONS</AllowMethods>
+  <AllowHeaders>Origin, X-Requested-With, Content-Type, Accept, Authorization</AllowHeaders>
+  <MaxAge>3600</MaxAge>
+  <AllowCredentials>true</AllowCredentials>
+  <ExposeHeaders>Content-Length, X-My-Custom-Header</ExposeHeaders>
+</CORS>
