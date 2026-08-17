@@ -1,0 +1,4 @@
+serviceaccount: apigee-proxy-sa@aviato-sandbox-teg-apigee-dev.iam.gserviceaccount.com
+environments:
+  main: [default]
+  uat: [default]
