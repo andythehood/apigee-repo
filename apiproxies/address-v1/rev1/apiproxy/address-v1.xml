@@ -1,0 +1,13 @@
+<APIProxy revision="1" name="address-v1">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1760006436983</CreatedAt>
+    <LastModifiedAt>1760006436983</LastModifiedAt>
+    <BasePaths>/admission-v1</BasePaths>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
